@@ -14,10 +14,10 @@
       <div ng-switch on="showAdmin" class="span2 pullright">
         <div ng-switch-when="true">
             <div id="dd" class="dropdown-wrapper btn">
-              <span>Mountain Goat pack</span>
+              <span>Fibonacci</span>
               <ul class="dropdown">
-                <li class="dropdown__item"><a href="#" ng-model="cardPack" id="deckGoat" ng-click="setCardPack('goat')">Mountain Goat</a></li>
                 <li class="dropdown__item"><a href="#" ng-model="cardPack" id="deckFib" ng-click="setCardPack('fib')">Fibonacci</a></li>
+                <li class="dropdown__item"><a href="#" ng-model="cardPack" id="deckGoat" ng-click="setCardPack('goat')">Mountain Goat</a></li>
                 <li class="dropdown__item"><a href="#" ng-model="cardPack" id="deckSeq" ng-click="setCardPack('seq')">Sequential</a></li>
                 <li class="dropdown__item"><a href="#" ng-model="cardPack" id="deckPlay" ng-click="setCardPack('play')">Playing Cards</a></li>
                 <li class="dropdown__item"><a href="#" ng-model="cardPack" id="deckShirt" ng-click="setCardPack('tshirt')">T-Shirt</a></li>
@@ -46,7 +46,13 @@
       <input type="checkbox" ng-model="voter" ng-disabled="forceRevealDisable" ng-change="toggleVoter()">
       <label class="btn" data-on="You are a voter" data-off="You are not a voter">I am voting</label>
     </div>
-
+    
+    <div>
+	    <p>Current name: {{voterName}}</p>
+	    <input ng-model="newName" ui-enter="changeName(newName)" name="namefield" id="namefield" type="text" maxlength="32" placeholder="your name" class="span2 roomUrl"/>
+		<button ng-click="changeName(newName)" class="span2 btn" title="Change Name" type="submit">Change name</button>
+    </div>
+    
     <div ng-switch on="voter">
 
       <div ng-switch-when="false">
@@ -65,8 +71,8 @@
     <div class="cards{{votingState}}" id="chosenCards">
 
       <div ng-repeat="vote in votes" ng-click="unvote(vote.sessionId)" class="card card--2-sided vote" selectedvote>
-        <div class="card--side-1">x</div>
-        <div class="card--side-2" cardvalue>{{vote.visibleVote}}</div>
+        <div class="card--side-1">X<br>{{vote.voterName}}</div>
+        <div class="card--side-2" cardvalue>{{vote.visibleVote}}<br>{{vote.voterName}}</div>
       </div>
       <div ng-repeat="i in placeholderVotes" class="card card--placeholder">
         &nbsp;

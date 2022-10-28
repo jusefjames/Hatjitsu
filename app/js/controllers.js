@@ -59,7 +59,7 @@ function LobbyCtrl($scope, $location, socket) {
   $scope.enterRoom = function (room) {
     // console.log('enterRoom: room info');
     $scope.disableButtons = true;
-    socket.emit('room info', { roomUrl: room }, function (response) {
+    socket.emit('room info', { roomUrl: room}, function (response) {
       if (response.error) {
         $scope.disableButtons = false;
         $scope.$emit('show error', response.error);
@@ -92,7 +92,7 @@ function average(data){
   }, 0);
 
   var avg = sum / data.length;
-  return avg;
+  return avg.toFixed(2);
 }
 
 function cardValue(vote){
@@ -140,10 +140,10 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
     $scope.showAverage = voteArr.length === 0 && cardValues.length > 0;
 
     $scope.forceRevealDisable = (!$scope.forcedReveal && ($scope.votes.length < $scope.voterCount || $scope.voterCount === 0)) ? false : true;
-    console.log("forceRevealDisable", $scope.forceRevealDisable)
-    console.log("alreadySorted;", $scope.alreadySorted)
+    // console.log("forceRevealDisable", $scope.forceRevealDisable)
+    // console.log("alreadySorted;", $scope.alreadySorted)
     $scope.sortVotesDisable = !$scope.forceRevealDisable || $scope.alreadySorted;
-    console.log("sortVotesDisable", $scope.sortVotesDisable)
+    // console.log("sortVotesDisable", $scope.sortVotesDisable)
 
     if ($scope.votes.length === $scope.voterCount || $scope.forcedReveal) {
       if ($scope.alreadySorted) {
@@ -197,7 +197,7 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
     $scope.voted = haveIVoted();
     if (!voteHash) {
       // initialize connections array with my first vote. (just to speed up UI)
-      $scope.votes.push({ sessionId: $scope.sessionId, vote: vote });
+      $scope.votes.push({ sessionId: $scope.sessionId, vote: vote, voterName: $scope.voterName });
     } else {
       if (vote) {
         voteHash.vote = vote;
@@ -215,7 +215,7 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
   };
 
   var chooseCardPack = function (val) {
-    var fib = ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'];
+    var fib = ['1', '2', '3', '5', '8', '13', '21', '34', '55', '\u2615', '?'];
     var goat = ['0', '\u00BD', '1', '2', '3', '5', '8', '13', '20', '40', '100', '?', '\u2615'];
     var seq = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '?'];
     var play = ['A\u2660', '2', '3', '5', '8', '\u2654'];
@@ -264,6 +264,7 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
     if (connection) {
       $scope.voter = connection.voter;
       $scope.myVote = connection.vote;
+      $scope.voterName = connection.voterName;
       $scope.voted = haveIVoted();
     }
 
@@ -303,6 +304,13 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
     });
     socket.on('voter status changed', function () {
       // console.log("on voter status changed");
+      // console.log("emit room info", { roomUrl: $scope.roomId });
+      this.emit('room info', { roomUrl: $scope.roomId }, function (response) {
+        processMessage(response, refreshRoomInfo);
+      });
+    });
+    socket.on('voter name changed', function () {
+      // console.log("on voter name changed");
       // console.log("emit room info", { roomUrl: $scope.roomId });
       this.emit('room info', { roomUrl: $scope.roomId }, function (response) {
         processMessage(response, refreshRoomInfo);
@@ -353,7 +361,7 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
       });
     });
     socket.on('disconnect', function () {
-      // console.log("on disconnect");
+      console.log("on disconnect");
     });
 
     // console.log("emit join room", { roomUrl: $scope.roomId, sessionId: $scope.sessionId });
@@ -376,7 +384,7 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
         setLocalVote(vote);
 
         // console.log("emit vote", { roomUrl: $scope.roomId, vote: vote, sessionId: $scope.sessionId });
-        socket.emit('vote', { roomUrl: $scope.roomId, vote: vote, sessionId: $scope.sessionId }, function (response) {
+        socket.emit('vote', { roomUrl: $scope.roomId, vote: vote, voterName: $scope.voterName, sessionId: $scope.sessionId }, function (response) {
           processMessage(response);
         });
       }
@@ -425,6 +433,14 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
       processMessage(response);
     });
   };
+  
+  $scope.changeName = function (newName) {
+	$scope.voterName = newName;    
+    // console.log("change name", { roomUrl: $scope.roomId, voterName: newName, sessionId: $scope.sessionId });
+    socket.emit('change name', { roomUrl: $scope.roomId, voterName: newName, sessionId: $scope.sessionId }, function (response) {
+      processMessage(response);
+    });
+  };
 
   $scope.roomId = $routeParams.roomId;
   $scope.humanCount = 0;
@@ -435,6 +451,7 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
   $scope.votes = [];
   $scope.cardPack = '';
   $scope.myVote = undefined;
+  $scope.voterName = 'Guest';
   $scope.voted = haveIVoted();
   $scope.votingState = "";
   $scope.forcedReveal = false;

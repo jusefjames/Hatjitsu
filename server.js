@@ -238,5 +238,17 @@ io.on('connection', function (socket) {
       callback( {} );
     }
   });
+  
+  socket.on('change name', function (data, callback) {
+    statsSocketMessagesReceived++;
+    // console.log("on change name to " + data.voterName + " for " + data.roomUrl, socket.id, data);
+    var room = lobby.getRoom(data.roomUrl);
+    if (room.error) {
+      callback( { error: room.error });
+    } else {
+      room.changeName(data);
+      callback( {} );
+    }
+  });
 
 });
