@@ -276,8 +276,14 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
     if (connection) {
       $scope.voter = connection.voter;
       $scope.myVote = connection.vote;
-      $scope.voterName = connection.voterName;
       $scope.voted = haveIVoted();
+
+      $scope.voterName = connection.voterName;
+      // console.log("cookieVotername", $.cookie("voterName"))
+      if ($.cookie("voterName") && $.cookie("voterName") !== $scope.voterName) {
+        $scope.voterName = $.cookie("voterName");
+        changeVoterNameDebounced();
+      }
     }
 
     processVotes();
@@ -451,6 +457,8 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
   };
 
   var changeVoterNameDebounced = function changeVoterNameDebounced() {
+    console.log('Save cookie voterName');
+    $.cookie("voterName", $scope.voterName, {expires: 14});
     // console.log("emit change voter name", { roomUrl: $scope.roomId, voter: $scope.voterName, sessionId: $scope.sessionId });
     socket.emit('change voter name', { roomUrl: $scope.roomId, voterName: $scope.voterName, sessionId: $scope.sessionId }, function (response) {
       processMessage(response);
