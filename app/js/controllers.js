@@ -439,7 +439,9 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
   };
 
   $scope.copyToClipboard = function () {
-    var text = $scope.votes.map(value => value.vote).sort().join(',');
+    var text = $scope.votes.map(value => value.vote).sort(function(a, b) {
+      return a - b;
+    }).join(',');
 
     var input = document.body.appendChild(document.createElement("input"));
     input.value = text;
