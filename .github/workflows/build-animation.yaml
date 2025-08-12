@@ -28,7 +28,7 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          echo ::set-output name=created::$(date -u +'%Y-%m-%d')
+          echo "created=$(date -u +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
