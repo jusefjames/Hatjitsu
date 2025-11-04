@@ -220,10 +220,7 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
     var seq = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '?'];
     var play = ['A\u2660', '2', '3', '5', '8', '\u2654'];
     var tshirt = ['XL', 'L', 'M', 'S', 'XS', '?'];
-    var teamhealth = ['\u{1F641}', '\u{1F610}', '\u{1F60E}', '?', ];
-    var waarschijnlijkheid = ['0,1', '0,2', '0,5', '1', '3', '6', '10'];
-    var blootstelling = ['0,5', '1', '2', '3', '6', '10'];
-    var effect = ['1', '3', '7', '15', '40', '100'];
+    var workdays = [ '0.5', '1', '1.5', '2', '3', '4', '5', '7.5', '10', '15', '20', '25'];
     switch (val) {
     case ('fib'):
       return fib;
@@ -235,14 +232,8 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
       return play;
     case ('tshirt'):
       return tshirt;
-    case ('teamhealth'):
-      return teamhealth;
-    case ('waarschijnlijkheid'):
-      return waarschijnlijkheid;
-    case ('blootstelling'):
-      return blootstelling;
-    case ('effect'):
-      return effect;
+    case ('workdays'):
+      return workdays;
     default:
       return [];
     }
