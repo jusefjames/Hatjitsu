@@ -1,0 +1,27 @@
+.qr-code {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-align: center;
+}
+
+.qr-code #qrcode {
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.qr-code #qrcode img {
+    border-radius: 8px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+.qr-code p {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin: 0;
+}

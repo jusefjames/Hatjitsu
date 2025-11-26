@@ -462,6 +462,21 @@ function RoomCtrl($scope, $routeParams, $timeout, socket) {
     wrappedFunction();
   }
 
+    $scope.generateQR = function() {
+        var url = window.location.href;
+        new QRCode(document.getElementById("qrcode"), {
+            text: url,
+            width: 128,
+            height: 128
+        });
+    };
+
+    // Call after DOM ready
+    $timeout(function() {
+        $scope.generateQR();
+    }, 0);
+
+
   $scope.roomId = $routeParams.roomId;
   $scope.humanCount = 0;
   $scope.voterCount = 0;
